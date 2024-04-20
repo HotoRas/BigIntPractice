@@ -21,6 +21,7 @@
 
 #if __cplusplus >= 202002L // check if operator<=> avaliable
 #define _AdvancedDiff 1
+#include <compare>
 #elif define(_MSVC_LANG) && _MSVC_LANG >= 202002L
 #define _AdvancedDiff 1
 #else
@@ -48,7 +49,38 @@ public:
 
     void operator=(const BI&);
     void operator=(int64_t);
-    BI operator+(const BI&);
+
+    BI operator+(const BI&) const;
+    BI operator-(const BI&) const;
+
+    void operator*=(int64_t);
+    BI operator*(int64_t) const;
+
+    friend std::pair<BI, BI> divmod(const BI&, const BI&);
+
+    BI operator/(const BI&) const;
+    BI operator%(const BI&) const;
+
+    void operator/=(int);
+    BI operator/(int v) const;
+
+    int operator%(int) const;
+
+    inline void operator+=(const BI& v) { *this = *this + v; }
+    inline void operator-=(const BI& v) { *this = *this - v; }
+    inline void operator*=(const BI& v) { *this = *this * v; }
+    inline void operator/=(const BI& v) { *this = *this / v; }
+
+#if _AdvancedDiff 0
+    bool operator<(const BI&) const;
+    bool operator>(const BI&) const;
+    bool operator>=(const BI&) const;
+    bool operator<=(const BI&) const;
+    bool operator!=(const BI&) const;
+#else // _AdvancedDiff 1
+    auto operator<=>(const BI&) const;
+#endif // _AdvancedDiff
+    bool operator==(const BI&) const;
 
     friend std::ostream operator>>(BigInt, std::ostream&);
     friend std::istream operator<<(BigInt, std::istream&);
