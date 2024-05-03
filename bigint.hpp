@@ -22,11 +22,12 @@
 #if __cplusplus >= 202002L // check if operator<=> avaliable
 #define _AdvancedDiff 1
 #include <compare>
-#elif define(_MSVC_LANG) && _MSVC_LANG >= 202002L
+#elif define(_MSVC_LANG) && _MSVC_LANG >= 202002L // MSVCPP-compatible area
 #define _AdvancedDiff 1
+#include <compare>
 #else
 #define _AdvancedDiff 0
-#endif
+#endif // __cplusplus >= 202002L
 
 class bigint_t {
 private:
@@ -71,13 +72,13 @@ public:
     inline void operator*=(const BI& v) { *this = *this * v; }
     inline void operator/=(const BI& v) { *this = *this / v; }
 
-#if _AdvancedDiff 0
+#if _AdvancedDiff 0 // Originally these are to be defined
     bool operator<(const BI&) const;
     bool operator>(const BI&) const;
     bool operator>=(const BI&) const;
     bool operator<=(const BI&) const;
     bool operator!=(const BI&) const;
-#else // _AdvancedDiff 1
+#else // _AdvancedDiff 1 // This is the replacement
     auto operator<=>(const BI&) const;
 #endif // _AdvancedDiff
     bool operator==(const BI&) const;
