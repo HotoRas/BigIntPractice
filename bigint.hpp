@@ -1,8 +1,6 @@
 #ifndef BIGINT_HPP
 #define BIGINT_HPP 1
 
-#define BI bigint_t
-
 // c++ standard headers
 #include <iostream>
 #include <vector>
@@ -31,87 +29,87 @@
 
 class bigint_t {
 private:
-    std::vector<uint64_t> a;
+    std::vector<uint64_t> _num;
     bool _flag;
     const int base = 1e9;
     const int base_digits = 9;
     int sign;
 
 public:
-    BI(int64_t);
-    BI();
-    BI(const std::string);
-    ~BI();
+    bigint_t(int64_t);
+    bigint_t();
+    bigint_t(const std::string);
+    ~bigint_t();
 
     int size();
-    BI operator^ (const BI&);
+    bigint_t operator^ (const bigint_t&);
     std::string to_string();
     int sumof();
 
-    void operator=(const BI&);
+    void operator=(const bigint_t&);
     void operator=(int64_t);
 
-    BI operator+(const BI&) const;
-    BI operator-(const BI&) const;
+    bigint_t operator+(const bigint_t&) const;
+    bigint_t operator-(const bigint_t&) const;
 
     void operator*=(int64_t);
-    BI operator*(int64_t) const;
+    bigint_t operator*(int64_t) const;
 
-    friend std::pair<BI, BI> divmod(const BI&, const BI&);
+    friend std::pair<bigint_t, bigint_t> divmod(const bigint_t&, const bigint_t&);
 
-    BI operator/(const BI&) const;
-    BI operator%(const BI&) const;
+    bigint_t operator/(const bigint_t&) const;
+    bigint_t operator%(const bigint_t&) const;
 
     void operator/=(int);
-    BI operator/(int v) const;
+    bigint_t operator/(int v) const;
 
     int operator%(int) const;
 
-    inline void operator+=(const BI& v) { *this = *this + v; }
-    inline void operator-=(const BI& v) { *this = *this - v; }
-    inline void operator*=(const BI& v) { *this = *this * v; }
-    inline void operator/=(const BI& v) { *this = *this / v; }
+    inline void operator+=(const bigint_t& v) { *this = *this + v; }
+    inline void operator-=(const bigint_t& v) { *this = *this - v; }
+    inline void operator*=(const bigint_t& v) { *this = *this * v; }
+    inline void operator/=(const bigint_t& v) { *this = *this / v; }
 
 #if _AdvancedDiff 0 // Originally these are to be defined
-    bool operator<(const BI&) const;
-    bool operator>(const BI&) const;
-    bool operator>=(const BI&) const;
-    bool operator<=(const BI&) const;
-    bool operator!=(const BI&) const;
+    bool operator<(const bigint_t&) const;
+    bool operator>(const bigint_t&) const;
+    bool operator>=(const bigint_t&) const;
+    bool operator<=(const bigint_t&) const;
+    bool operator!=(const bigint_t&) const;
 #else // _AdvancedDiff 1 // This is the replacement
-    auto operator<=>(const BI&) const;
+    auto operator<=>(const bigint_t&) const;
 #endif // _AdvancedDiff
-    bool operator==(const BI&) const;
+    bool operator==(const bigint_t&) const;
 
     void trim();
     bool isZero() const;
 
-    BI operator-() const;
-    BI abs() const;
+    bigint_t operator-() const;
+    bigint_t abs() const;
 
     int64_t longValue() const;
 
-    friend BI std::gcd(const BI&, const BI&);
-    friend BI std::lcm(const BI&, const BI&);
+    friend bigint_t std::gcd(const bigint_t&, const bigint_t&);
+    friend bigint_t std::lcm(const bigint_t&, const bigint_t&);
 
     void read(const std::string&);
 
-    friend std::ostream& operator<<(std::ostream&, BI&);
-    friend std::istream& operator>>(std::istream&, BI&);
+    friend std::ostream& operator<<(std::ostream&, bigint_t&);
+    friend std::istream& operator>>(std::istream&, bigint_t&);
 
     static inline
     std::vector<int> convert_base(
-        const std::vector<int> &a, int old_digits, int new_digits
+        const std::vector<int> &_num, int old_digits, int new_digits
         ) {
-        std::vector<long long> p(max(old_digits, new_digits) + 1);
+        std::vector<int64_t> p(max(old_digits, new_digits) + 1);
         p[0] = 1;
         for (int i = 1; i < (int) p.size(); i++)
             p[i] = p[i - 1] * 10;
         std::vector<int> res;
         int64_t cur = 0;
         int cur_digits = 0;
-        for (int i = 0; i < (int) a.size(); i++) {
-            cur += a[i] * p[cur_digits];
+        for (int i = 0; i < (int) _num.size(); i++) {
+            cur += _num[i] * p[cur_digits];
             cur_digits += old_digits;
             while (cur_digits >= new_digits) {
                 res.push_back(int(cur % p[new_digits]));
@@ -124,33 +122,32 @@ public:
         return res;
     }
 
-#define vll std::vector<int64_t>
     static inline
-    vll karatsubaMultiply(const vll &a, const vll &b) {
-        int n = a.size();
-        vll res(n + n);
+    std::vector<int64_t> karatsubaMultiply(const std::vector<int64_t> &_num, const std::vector<int64_t> &b) {
+        int n = _num.size();
+        std::vector<int64_t> res(n + n);
         if (n <= 32) {
             for (int i = 0; i < n; i++)
                 for (int j = 0; j < n; j++)
-                    res[i + j] += a[i] * b[j];
+                    res[i + j] += _num[i] * b[j];
             return res;
         }
 
         int k = n >> 1;
-        vll a1(a.begin(), a.begin() + k);
-        vll a2(a.begin() + k, a.end());
-        vll b1(b.begin(), b.begin() + k);
-        vll b2(b.begin() + k, b.end());
+        std::vector<int64_t> a1(_num.begin(), _num.begin() + k);
+        std::vector<int64_t> a2(_num.begin() + k, _num.end());
+        std::vector<int64_t> b1(b.begin(), b.begin() + k);
+        std::vector<int64_t> b2(b.begin() + k, b.end());
 
-        vll a1b1 = karatsubaMultiply(a1, b1);
-        vll a2b2 = karatsubaMultiply(a2, b2);
+        std::vector<int64_t> a1b1 = karatsubaMultiply(a1, b1);
+        std::vector<int64_t> a2b2 = karatsubaMultiply(a2, b2);
 
         for (int i = 0; i < k; i++)
             a2[i] += a1[i];
         for (int i = 0; i < k; i++)
             b2[i] += b1[i];
 
-        vll r = karatsubaMultiply(a2, b2);
+        std::vector<int64_t> r = karatsubaMultiply(a2, b2);
         for (int i = 0; i < (int) a1b1.size(); i++)
             r[i] -= a1b1[i];
         for (int i = 0; i < (int) a2b2.size(); i++)
@@ -164,14 +161,13 @@ public:
             res[i + n] += a2b2[i];
         return res;
     }
-#undef vll
 
-    BI operator*(const BI&) const;
+    bigint_t operator*(const bigint_t&) const;
 
-    BI operator<<(int);
-    BI operator>>(int);
+    bigint_t operator<<(int);
+    bigint_t operator>>(int);
+    void operator<<=(int);
+    void operator>>=(int);
 }
-
-#undef BI
 
 #endif // BIGINT_HPP
